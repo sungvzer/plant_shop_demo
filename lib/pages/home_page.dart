@@ -24,8 +24,12 @@ class HomePage extends StatelessWidget {
             children: [
               const Title(),
               const SizedBox(height: 16),
-              const Row(
-                children: [SearchBar(), SizedBox(width: 16), FilterButton()],
+              Row(
+                children: const [
+                  SearchBar(),
+                  SizedBox(width: 16),
+                  FilterButton()
+                ],
               ),
               const SizedBox(height: 24),
               Categories(categories: [
