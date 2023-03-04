@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +22,8 @@ class HomePage extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Title(),
               const SizedBox(height: 16),
@@ -39,11 +42,134 @@ class HomePage extends StatelessWidget {
                 Category(label: "Outdoor"),
                 Category(label: "Gardening tools"),
               ]),
+              const SizedBox(height: 12),
+              const ProductCarousel(),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class ProductCarousel extends StatelessWidget {
+  const ProductCarousel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      child: Wrap(spacing: 16, children: const [
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard(),
+        PlantCard()
+      ]),
+    );
+  }
+}
+
+class PlantCard extends StatelessWidget {
+  const PlantCard({super.key});
+
+  static List<String> plantNames = const [
+    "Unlawful Sinner",
+    "Carnivore Bastard",
+    "Sunshine Killer",
+    "Greedy Fucker",
+    "Spit-in-my-mouth"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final rng = Random();
+    final random = rng.nextInt(5);
+    randomPrice() => rng.nextInt(50) * 10;
+    final theme = Theme.of(context);
+    return Material(
+      type: MaterialType.card,
+      borderRadius: BorderRadius.circular(16),
+      color: Colors.green[100]!.withAlpha(40),
+      child: Container(
+        constraints: const BoxConstraints.tightForFinite(width: 200),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image(
+                image: AssetImage("assets/plants/plant$random.png"),
+                height: 200,
+                width: 170,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                plantNames[random],
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 18,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        random > 2 ? "From" : "",
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: Colors.black54),
+                      ),
+                      Text(
+                        "\$${randomPrice()}",
+                        style: theme.textTheme.titleLarge,
+                      )
+                    ],
+                  ),
+                  Ink(
+                    width: 35,
+                    height: 35,
+                    padding: const EdgeInsets.all(0),
+                    decoration: ShapeDecoration(
+                      color: Colors.green[200]!,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                    ),
+                    child: IconButton(
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(
+                        Icons.add,
+                      ),
+                      color: Colors.white,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+    // return SizedBox(
+    //   width: 200,
+    //   height: 343,
+    //   child: Card(
+    //     child: ,
+    //   ),
+    // );
   }
 }
 
