@@ -1,6 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:plant_shop_flutter/models/plant.dart';
+import 'package:plant_shop_flutter/models/plant_cart_item.dart';
+import 'package:plant_shop_flutter/providers/cart_provider.dart';
+import 'package:plant_shop_flutter/providers/dummy_plant_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -9,22 +15,28 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const Icon(Icons.menu),
-          actions: const [
-            Icon(Icons.shopping_cart_outlined),
-            SizedBox(
-              width: 10,
-            )
-          ],
-        ),
-        body: Padding(
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.shopping_cart,
+            ),
+            onPressed: () {
+              context.go('/cart');
+            },
+          ),
+          const SizedBox(
+            width: 10,
+          )
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              const Title(),
+              const HomePageTitle(),
               const SizedBox(height: 16),
               Row(
                 children: const [
@@ -51,113 +63,103 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class ProductCarousel extends StatelessWidget {
+String getAssetPath(int index) => 'assets/plants/plant$index.png';
+
+class ProductCarousel extends HookConsumerWidget {
   const ProductCarousel({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      child: Wrap(spacing: 16, children: const [
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard(),
-        PlantCard()
-      ]),
+      child: Wrap(
+        spacing: 16,
+        children: [
+          for (final plant in ref.read(dummyPlantProvider))
+            PlantCard(plant: plant),
+        ],
+      ),
     );
   }
 }
 
 class PlantCard extends StatelessWidget {
-  const PlantCard({super.key});
+  final Plant plant;
 
-  static List<String> plantNames = const [
-    "Unlawful Sinner",
-    "Carnivore Bastard",
-    "Sunshine Killer",
-    "Greedy Fucker",
-    "Spit-in-my-mouth"
-  ];
+  const PlantCard({
+    super.key,
+    required this.plant,
+  });
 
   @override
   Widget build(BuildContext context) {
     final rng = Random();
     final random = rng.nextInt(5);
-    randomPrice() => rng.nextInt(50) * 10;
     final theme = Theme.of(context);
     return Material(
       type: MaterialType.card,
       borderRadius: BorderRadius.circular(16),
       color: Colors.green[100]!.withAlpha(40),
-      child: Container(
-        constraints: const BoxConstraints.tightForFinite(width: 200),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image(
-                image: AssetImage("assets/plants/plant$random.png"),
-                height: 200,
-                width: 170,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                plantNames[random],
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 18,
-                  color: Colors.black54,
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          constraints: const BoxConstraints.tightForFinite(width: 200),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image(
+                  image: AssetImage(plant.imagePath),
+                  height: 200,
+                  width: 170,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        random > 2 ? "From" : "",
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(color: Colors.black54),
-                      ),
-                      Text(
-                        "\$${randomPrice()}",
-                        style: theme.textTheme.titleLarge,
-                      )
-                    ],
+                const SizedBox(height: 16),
+                Text(
+                  plant.name,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    color: Colors.black54,
                   ),
-                  Ink(
-                    width: 35,
-                    height: 35,
-                    padding: const EdgeInsets.all(0),
-                    decoration: ShapeDecoration(
-                      color: Colors.green[200]!,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          random > 2 ? "From" : "",
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: Colors.black54),
+                        ),
+                        Text(
+                          "\$${plant.price}",
+                          style: theme.textTheme.titleLarge,
+                        )
+                      ],
+                    ),
+                    Ink(
+                      width: 35,
+                      height: 35,
+                      padding: const EdgeInsets.all(0),
+                      decoration: ShapeDecoration(
+                        color: Colors.green[200]!,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                         ),
                       ),
+                      child: AddButton(plant: plant),
                     ),
-                    child: IconButton(
-                      padding: const EdgeInsets.all(0),
-                      icon: const Icon(
-                        Icons.add,
-                      ),
-                      color: Colors.white,
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -169,6 +171,40 @@ class PlantCard extends StatelessWidget {
     //     child: ,
     //   ),
     // );
+  }
+}
+
+class AddButton extends StatefulHookConsumerWidget {
+  final Plant plant;
+
+  const AddButton({
+    super.key,
+    required this.plant,
+  });
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddButtonState();
+}
+
+class _AddButtonState extends ConsumerState<AddButton> {
+  _AddButtonState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      padding: const EdgeInsets.all(0),
+      icon: const Icon(
+        Icons.add,
+      ),
+      color: Colors.white,
+      onPressed: () {
+        ref.read(cartProvider.notifier).addPlant(
+              PlantCartItem.fromPlant(widget.plant),
+            );
+      },
+    );
   }
 }
 
@@ -316,8 +352,8 @@ class SearchBar extends StatelessWidget {
   }
 }
 
-class Title extends StatelessWidget {
-  const Title({
+class HomePageTitle extends StatelessWidget {
+  const HomePageTitle({
     super.key,
   });
 
