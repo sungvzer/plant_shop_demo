@@ -212,14 +212,17 @@ class CartPageTitle extends HookConsumerWidget {
         ),
         if (cart.items.isNotEmpty) ...[
           const Spacer(),
-          InkWell(
-            onTap: () {
-              cartNotifier.empty();
-            },
-            child: Ink(
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.delete),
+          Tooltip(
+            message: "Delete all items from cart",
+            child: InkWell(
+              onTap: () {
+                cartNotifier.empty();
+              },
+              child: Ink(
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.delete),
+                ),
               ),
             ),
           ),
