@@ -40,6 +40,14 @@ final plantProvider =
       size: PlantSize.small,
       id: 3,
     ),
+    Plant(
+      description: loremIpsum,
+      imagePath: getAssetPath(4),
+      name: 'Wife Beater',
+      price: 15,
+      size: PlantSize.large,
+      id: 4,
+    ),
   ]);
 });
 
