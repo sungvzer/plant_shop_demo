@@ -15,8 +15,14 @@ class MainApp extends StatelessWidget {
       child: MaterialApp.router(
         theme: ThemeData(
           useMaterial3: true,
-          colorSchemeSeed: Colors.green,
           fontFamily: "Josefin Sans",
+          colorSchemeSeed: Colors.lightGreen,
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          fontFamily: "Josefin Sans",
+          colorSchemeSeed: Colors.lightGreen,
+          brightness: Brightness.dark,
         ),
         debugShowCheckedModeBanner: false,
         routerConfig: router,

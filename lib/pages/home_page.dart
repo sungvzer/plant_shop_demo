@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:plant_shop_flutter/models/plant.dart';
-import 'package:plant_shop_flutter/models/plant_cart_item.dart';
 import 'package:plant_shop_flutter/providers/cart_provider.dart';
 import 'package:plant_shop_flutter/providers/dummy_plant_provider.dart';
 
@@ -76,8 +75,7 @@ class ProductCarousel extends HookConsumerWidget {
       child: Wrap(
         spacing: 16,
         children: [
-          for (final plant in ref.read(dummyPlantProvider))
-            PlantCard(plant: plant),
+          for (final plant in ref.read(plantProvider)) PlantCard(plant: plant),
         ],
       ),
     );
@@ -100,9 +98,11 @@ class PlantCard extends StatelessWidget {
     return Material(
       type: MaterialType.card,
       borderRadius: BorderRadius.circular(16),
-      color: Colors.green[100]!.withAlpha(40),
+      color: theme.colorScheme.primaryContainer.withAlpha(70),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          context.go('/plants/${plant.id}');
+        },
         child: Container(
           constraints: const BoxConstraints.tightForFinite(width: 200),
           child: Padding(
@@ -120,7 +120,7 @@ class PlantCard extends StatelessWidget {
                   plant.name,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontSize: 18,
-                    color: Colors.black54,
+                    color: theme.colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -134,7 +134,7 @@ class PlantCard extends StatelessWidget {
                         Text(
                           random > 2 ? "From" : "",
                           style: theme.textTheme.labelMedium
-                              ?.copyWith(color: Colors.black54),
+                              ?.copyWith(color: theme.colorScheme.onBackground),
                         ),
                         Text(
                           "\$${plant.price}",
@@ -147,7 +147,7 @@ class PlantCard extends StatelessWidget {
                       height: 35,
                       padding: const EdgeInsets.all(0),
                       decoration: ShapeDecoration(
-                        color: Colors.green[200]!,
+                        color: theme.colorScheme.primaryContainer,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(5),
@@ -187,6 +187,8 @@ class AddButton extends StatefulHookConsumerWidget {
 }
 
 class _AddButtonState extends ConsumerState<AddButton> {
+  int iconIndex = 0;
+
   _AddButtonState() {
     super.initState();
   }
@@ -195,14 +197,37 @@ class _AddButtonState extends ConsumerState<AddButton> {
   Widget build(BuildContext context) {
     return IconButton(
       padding: const EdgeInsets.all(0),
-      icon: const Icon(
-        Icons.add,
+      icon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 100),
+        transitionBuilder: (child, anim) => RotationTransition(
+          turns: child.key == const ValueKey('icon1')
+              ? Tween<double>(begin: 1, end: 0.75).animate(anim)
+              : Tween<double>(begin: 0.75, end: 1).animate(anim),
+          child: ScaleTransition(scale: anim, child: child),
+        ),
+        child: iconIndex == 0
+            ? const Icon(Icons.add, key: ValueKey('icon1'))
+            : const Icon(
+                Icons.done,
+                key: ValueKey('icon2'),
+              ),
       ),
-      color: Colors.white,
-      onPressed: () {
-        ref.read(cartProvider.notifier).addPlant(
-              PlantCartItem.fromPlant(widget.plant),
-            );
+      color: Theme.of(context).colorScheme.onPrimaryContainer,
+      onPressed: () async {
+        ref.read(cartProvider.notifier).addPlant(widget.plant);
+        setState(() {
+          iconIndex = 1;
+        });
+
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            if (!mounted) return;
+            setState(() {
+              iconIndex = 0;
+            });
+          },
+        );
       },
     );
   }
@@ -230,6 +255,7 @@ class Categories extends StatefulWidget {
 class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Wrap(
@@ -244,7 +270,7 @@ class _CategoriesState extends State<Categories> {
                 vertical: 12,
               ),
               decoration: BoxDecoration(
-                color: Colors.green[100]?.withOpacity(0.4),
+                color: theme.colorScheme.primaryContainer,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   topRight: Radius.circular(24),
@@ -254,10 +280,10 @@ class _CategoriesState extends State<Categories> {
               ),
               child: Text(
                 e.label,
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: Colors.black54,
-                      fontSize: 16,
-                    ),
+                style: theme.textTheme.labelMedium!.copyWith(
+                  color: theme.colorScheme.onPrimaryContainer,
+                  fontSize: 16,
+                ),
               ),
             );
           } else {
@@ -272,10 +298,10 @@ class _CategoriesState extends State<Categories> {
               },
               child: Text(
                 e.label,
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: Colors.black54,
-                      fontSize: 16,
-                    ),
+                style: theme.textTheme.labelMedium!.copyWith(
+                  color: theme.colorScheme.onBackground,
+                  fontSize: 16,
+                ),
               ),
             );
           }
@@ -295,7 +321,7 @@ class FilterButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.green[100]!,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -323,7 +349,7 @@ class SearchBar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.green[100]!,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           borderRadius: BorderRadius.circular(16),
         ),

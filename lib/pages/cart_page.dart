@@ -11,6 +11,10 @@ class CartPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cart = ref.watch(cartProvider);
     final theme = Theme.of(context);
+    final discountTextStyle = theme.textTheme.titleMedium?.copyWith(
+      color: theme.colorScheme.primary.withOpacity(0.7),
+    );
+    var priceTextStyle = theme.textTheme.titleLarge;
     return Scaffold(
       appBar: AppBar(
           // leading: const Icon(Icons.menu),
@@ -18,39 +22,41 @@ class CartPage extends HookConsumerWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
+          child: Flex(
             crossAxisAlignment: CrossAxisAlignment.start,
+            direction: Axis.vertical,
             children: [
               const CartPageTitle(),
-              if (cart.items.isEmpty)
-                Expanded(
-                  child: Align(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.remove_shopping_cart),
-                        SizedBox(height: 5),
-                        Text("Your cart is empty."),
-                      ],
-                    ),
-                  ),
-                ),
-              if (cart.items.isNotEmpty) ...[
-                SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(
-                      height: MediaQuery.of(context).size.height - 320,
-                    ),
-                    child: ListView(
-                      children: [
-                        for (final item in cart.items)
-                          PlantCartCard(
-                            item: item,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+              Flexible(
+                child: (cart.items.isEmpty)
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.remove_shopping_cart,
+                              size: 48,
+                            ),
+                            SizedBox(height: 5),
+                            Text("Your cart is empty."),
+                          ],
+                        ),
+                      )
+                    : ListView(
+                        children: [
+                          for (final item in cart.items) ...[
+                            PlantCartCard(
+                              item: item,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ]
+                        ],
+                      ),
+              ),
+              if (cart.items.isNotEmpty)
                 Row(
                   children: [
                     Column(
@@ -58,9 +64,12 @@ class CartPage extends HookConsumerWidget {
                       children: [
                         Text(
                           "Price",
-                          style: theme.textTheme.titleLarge,
+                          style: priceTextStyle,
                         ),
-                        const Text("Discount"),
+                        Text(
+                          "Discount",
+                          style: discountTextStyle,
+                        ),
                         Text(
                           "Total",
                           style: theme.textTheme.headlineMedium,
@@ -78,16 +87,15 @@ class CartPage extends HookConsumerWidget {
                             decorationThickness: 2,
                           ),
                         ),
-                        const Text("-5%"),
+                        Text("-5%", style: discountTextStyle),
                         Text(
                           "\$${(cart.total * (100 - 5) / 100).toStringAsFixed(2)}",
-                          style: theme.textTheme.headlineMedium,
+                          style: priceTextStyle,
                         ),
                       ],
                     )
                   ],
                 ),
-              ]
             ],
           ),
         ),
@@ -107,28 +115,35 @@ class PlantCartCard extends StatelessWidget {
     return Card(
       shape: leafBorder,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image(
               image: AssetImage(item.imagePath),
-              height: 60,
-              width: 40,
+              height: 70,
+              width: 50,
             ),
             const SizedBox(width: 20),
-            Text(
-              item.name,
-              style: theme.textTheme.bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  item.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '\$${item.price}',
+                  style: theme.textTheme.bodyLarge,
+                ),
+              ],
             ),
             const Spacer(),
             Column(
               children: [
-                Text(
-                  "\$${item.price}",
-                  style: theme.textTheme.bodyLarge,
-                ),
                 QuantityWidget(item: item),
               ],
             ),
@@ -140,7 +155,7 @@ class PlantCartCard extends StatelessWidget {
 }
 
 class QuantityWidget extends HookConsumerWidget {
-  static const double iconSize = 16.0;
+  static const double iconSize = 32.0;
   final PlantCartItem item;
 
   const QuantityWidget({super.key, required this.item});
@@ -150,25 +165,28 @@ class QuantityWidget extends HookConsumerWidget {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Row(
+      child: Column(
         children: [
-          InkWell(
-            onTap: () {
-              ref.read(cartProvider.notifier).removePlant(item);
-            },
-            child: Ink(child: const Icon(Icons.remove, size: iconSize)),
-          ),
-          const SizedBox(width: 5),
-          Text(
-            "${item.quantity}",
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(width: 5),
           InkWell(
             onTap: () {
               ref.read(cartProvider.notifier).addPlant(item);
             },
-            child: const Icon(Icons.add, size: iconSize),
+            child: const Icon(Icons.arrow_drop_up, size: iconSize),
+          ),
+          const SizedBox(width: 5),
+          SizedBox(
+            child: Text(
+              "${item.quantity}",
+              style: theme.textTheme.headlineSmall,
+            ),
+          ),
+          const SizedBox(width: 5),
+          InkWell(
+            onTap: () {
+              ref.read(cartProvider.notifier).removePlant(item);
+            },
+            child:
+                Ink(child: const Icon(Icons.arrow_drop_down, size: iconSize)),
           ),
         ],
       ),
