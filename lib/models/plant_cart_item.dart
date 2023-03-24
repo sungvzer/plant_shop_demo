@@ -13,6 +13,10 @@ class PlantCartItem extends Plant {
     required this.quantity,
     required super.imagePath,
     required super.id,
+    required super.fertilityPercentage,
+    required super.lightPercentage,
+    required super.temperatureCelsius,
+    required super.waterPercentage,
   });
 
   static PlantCartItem fromPlant(Plant plant) {
@@ -24,6 +28,10 @@ class PlantCartItem extends Plant {
       quantity: 1,
       imagePath: plant.imagePath,
       id: plant.id,
+      fertilityPercentage: plant.fertilityPercentage,
+      lightPercentage: plant.lightPercentage,
+      temperatureCelsius: plant.temperatureCelsius,
+      waterPercentage: plant.waterPercentage,
     );
   }
 
@@ -35,6 +43,10 @@ class PlantCartItem extends Plant {
     int? quantity,
     String? imagePath,
     int? id,
+    int? fertilityPercentage,
+    int? lightPercentage,
+    int? temperatureCelsius,
+    int? waterPercentage,
   }) {
     return PlantCartItem(
       name: name ?? this.name,
@@ -44,6 +56,10 @@ class PlantCartItem extends Plant {
       quantity: quantity ?? this.quantity,
       imagePath: imagePath ?? this.imagePath,
       id: id ?? this.id,
+      fertilityPercentage: fertilityPercentage ?? this.fertilityPercentage,
+      lightPercentage: lightPercentage ?? this.lightPercentage,
+      temperatureCelsius: temperatureCelsius ?? this.temperatureCelsius,
+      waterPercentage: waterPercentage ?? this.waterPercentage,
     );
   }
 }

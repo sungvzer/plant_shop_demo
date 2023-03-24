@@ -10,6 +10,11 @@ class Plant {
   final PlantSize size;
   final String imagePath;
 
+  final int waterPercentage;
+  final int lightPercentage;
+  final int temperatureCelsius;
+  final int fertilityPercentage;
+
   final int id;
 
   const Plant({
@@ -19,5 +24,9 @@ class Plant {
     required this.size,
     required this.imagePath,
     required this.id,
+    required this.waterPercentage,
+    required this.fertilityPercentage,
+    required this.lightPercentage,
+    required this.temperatureCelsius,
   });
 }

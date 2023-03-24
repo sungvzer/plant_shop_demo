@@ -15,6 +15,10 @@ final plantProvider =
       price: 100,
       size: PlantSize.medium,
       id: 0,
+      fertilityPercentage: 30,
+      temperatureCelsius: 20,
+      lightPercentage: 90,
+      waterPercentage: 50,
     ),
     Plant(
       description: loremIpsum,
@@ -23,6 +27,10 @@ final plantProvider =
       price: 340,
       size: PlantSize.large,
       id: 1,
+      fertilityPercentage: 80,
+      temperatureCelsius: 24,
+      lightPercentage: 70,
+      waterPercentage: 80,
     ),
     Plant(
       description: loremIpsum,
@@ -31,6 +39,10 @@ final plantProvider =
       price: 130,
       size: PlantSize.extraLarge,
       id: 2,
+      fertilityPercentage: 60,
+      temperatureCelsius: 18,
+      lightPercentage: 80,
+      waterPercentage: 40,
     ),
     Plant(
       description: loremIpsum,
@@ -39,6 +51,10 @@ final plantProvider =
       price: 401,
       size: PlantSize.small,
       id: 3,
+      fertilityPercentage: 50,
+      temperatureCelsius: 22,
+      lightPercentage: 85,
+      waterPercentage: 35,
     ),
     Plant(
       description: loremIpsum,
@@ -47,6 +63,10 @@ final plantProvider =
       price: 15,
       size: PlantSize.large,
       id: 4,
+      fertilityPercentage: 50,
+      temperatureCelsius: 22,
+      lightPercentage: 85,
+      waterPercentage: 35,
     ),
   ]);
 });
