@@ -70,13 +70,16 @@ class _PlantPageState extends ConsumerState<PlantPage> {
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              Text(
-                plant.name,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                style: theme.textTheme.headlineLarge
-                    ?.copyWith(color: theme.colorScheme.onBackground),
-                textAlign: TextAlign.left,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  plant.name,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: theme.textTheme.headlineLarge
+                      ?.copyWith(color: theme.colorScheme.onBackground),
+                  textAlign: TextAlign.left,
+                ),
               ),
               const SizedBox(height: 20),
               PlantImageCarousel(

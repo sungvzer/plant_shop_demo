@@ -119,7 +119,6 @@ class PlantCard extends StatelessWidget {
                 Text(
                   plant.name,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 18,
                     color: theme.colorScheme.onBackground,
                   ),
                 ),
