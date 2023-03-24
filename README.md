@@ -1,3 +1,3 @@
-# flutter_application_1
+# Plant shop application demo written in flutter
 
-A new Flutter project.
+It has dummy data.
