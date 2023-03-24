@@ -15,6 +15,7 @@ class CartPage extends HookConsumerWidget {
       color: theme.colorScheme.primary.withOpacity(0.7),
     );
     var priceTextStyle = theme.textTheme.titleLarge;
+    var totalTextStyle = theme.textTheme.headlineMedium;
     return Scaffold(
       appBar: AppBar(
           // leading: const Icon(Icons.menu),
@@ -56,7 +57,7 @@ class CartPage extends HookConsumerWidget {
                         ],
                       ),
               ),
-              if (cart.items.isNotEmpty)
+              if (cart.items.isNotEmpty) ...[
                 Row(
                   children: [
                     Column(
@@ -72,7 +73,9 @@ class CartPage extends HookConsumerWidget {
                         ),
                         Text(
                           "Total",
-                          style: theme.textTheme.headlineMedium,
+                          style: totalTextStyle?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -82,17 +85,46 @@ class CartPage extends HookConsumerWidget {
                       children: [
                         Text(
                           "\$${cart.total}",
-                          style: theme.textTheme.titleLarge?.copyWith(),
+                          style: priceTextStyle,
                         ),
                         Text("-5%", style: discountTextStyle),
                         Text(
                           "\$${(cart.total * (100 - 5) / 100).toStringAsFixed(2)}",
-                          style: priceTextStyle,
+                          style: totalTextStyle?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     )
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      shape: const MaterialStatePropertyAll(leafBorder),
+                      backgroundColor: MaterialStatePropertyAll(
+                        theme.colorScheme.primaryContainer,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Checkout", style: theme.textTheme.titleLarge),
+                          const Icon(Icons.arrow_right),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ],
           ),
         ),
@@ -174,7 +206,7 @@ class QuantityWidget extends HookConsumerWidget {
           SizedBox(
             child: Text(
               "${item.quantity}",
-              style: theme.textTheme.headlineSmall,
+              style: theme.textTheme.labelLarge,
             ),
           ),
           const SizedBox(width: 5),
