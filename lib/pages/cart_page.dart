@@ -78,14 +78,11 @@ class CartPage extends HookConsumerWidget {
                     ),
                     const Spacer(),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "\$${cart.total}",
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            decoration: TextDecoration.lineThrough,
-                            decorationThickness: 2,
-                          ),
+                          style: theme.textTheme.titleLarge?.copyWith(),
                         ),
                         Text("-5%", style: discountTextStyle),
                         Text(
