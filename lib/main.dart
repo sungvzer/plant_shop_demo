@@ -11,17 +11,19 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // const seedColor = Color(0xffC7F2A7);
+    const seedColor = Color(0xffD3FCD5);
     return ProviderScope(
       child: MaterialApp.router(
         theme: ThemeData(
           useMaterial3: true,
           fontFamily: "Josefin Sans",
-          colorSchemeSeed: Colors.lightGreen,
+          colorSchemeSeed: seedColor,
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
           fontFamily: "Josefin Sans",
-          colorSchemeSeed: Colors.lightGreen,
+          colorSchemeSeed: seedColor,
           brightness: Brightness.dark,
         ),
         debugShowCheckedModeBanner: false,
