@@ -33,7 +33,7 @@ class _PlantPageState extends ConsumerState<PlantPage> {
         elevation: 0,
         label: const Text("Add to cart"),
         icon: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 350),
+          duration: const Duration(milliseconds: 100),
           transitionBuilder: (child, anim) => RotationTransition(
             turns: child.key == const ValueKey('icon1')
                 ? Tween<double>(begin: 1, end: 0.75).animate(anim)
@@ -54,7 +54,7 @@ class _PlantPageState extends ConsumerState<PlantPage> {
           });
 
           return Future.delayed(
-            const Duration(seconds: 3),
+            const Duration(seconds: 1),
             () {
               if (!mounted) return;
               setState(() {
